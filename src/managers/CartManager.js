@@ -1,9 +1,15 @@
 import fs from 'fs/promises';
-const path = './src/data/carts.json';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const cartsPath = path.join(__dirname, '..', 'data', 'carts.json');
 
 export default class CartManager {
   async getAll() {
-    const data = await fs.readFile(path, 'utf-8');
+    const data = await fs.readFile(cartsPath, 'utf-8');
     return JSON.parse(data);
   }
 
@@ -16,26 +22,26 @@ export default class CartManager {
     const carts = await this.getAll();
     const newCart = {
       id: carts.length ? carts[carts.length - 1].id + 1 : 1,
-      products: []
+      products: [],
     };
     carts.push(newCart);
-    await fs.writeFile(path, JSON.stringify(carts, null, 2));
+    await fs.writeFile(cartsPath, JSON.stringify(carts, null, 2));
     return newCart;
   }
 
-  async addProductToCart(cid, pid) {
+  async addProductToCart(cartId, productId) {
     const carts = await this.getAll();
-    const cart = carts.find(c => c.id === cid);
+    const cart = carts.find(c => c.id === cartId);
     if (!cart) return null;
 
-    const product = cart.products.find(p => p.product === pid);
-    if (product) {
-      product.quantity++;
+    const existingProduct = cart.products.find(p => p.product === productId);
+    if (existingProduct) {
+      existingProduct.quantity += 1;
     } else {
-      cart.products.push({ product: pid, quantity: 1 });
+      cart.products.push({ product: productId, quantity: 1 });
     }
 
-    await fs.writeFile(path, JSON.stringify(carts, null, 2));
+    await fs.writeFile(cartsPath, JSON.stringify(carts, null, 2));
     return cart;
   }
 }
