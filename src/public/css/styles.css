@@ -1,0 +1,153 @@
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Cuerpo general */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  padding: 2rem;
+  color: #212529;
+}
+
+/* Título principal */
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #1e3a8a;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Formulario */
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+form input {
+  padding: 0.6rem;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  flex: 1 1 200px;
+}
+
+form button {
+  padding: 0.6rem 1.2rem;
+  background-color: #1e40af;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+form button:hover {
+  background-color: #3b82f6;
+}
+
+/* Lista de productos */
+ul#productList {
+  list-style: none;
+  padding: 0;
+}
+
+ul#productList li {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 1rem;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+ul#productList li strong {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+ul#productList button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+ul#productList button:hover {
+  background-color: #bb2d3b;
+}
+
+/* Estilo para lista principal de productos (home.handlebars) */
+.product-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.product-list li {
+  background: white;
+  border-left: 5px solid #1e3a8a;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+}
+
+.product-list li em {
+  display: block;
+  margin-top: 5px;
+  color: #555;
+  font-style: italic;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.product-info span {
+  font-weight: normal;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #1e3a8a;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.error {
+  background-color: #dc3545;
+}
+
+.toast.success {
+  background-color: #198754;
+}

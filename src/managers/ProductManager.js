@@ -5,12 +5,26 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const productsPath = path.join(__dirname, '..', 'data', 'products.json');
+const filePath = path.join(__dirname, '..', 'data', 'products.json');
 
 export default class ProductManager {
   async getAll() {
-    const data = await fs.readFile(productsPath, 'utf-8');
-    return JSON.parse(data);
+    try {
+      const data = await fs.readFile(filePath, 'utf-8');
+      return JSON.parse(data);
+    } catch (error) {
+      console.error('Error leyendo productos:', error.message);
+      return [];
+    }
+  }
+
+  async saveAll(data) {
+    try {
+      await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error('Error guardando productos:', error.message);
+      throw error;
+    }
   }
 
   async getById(id) {
@@ -25,8 +39,9 @@ export default class ProductManager {
       id: products.length ? products[products.length - 1].id + 1 : 1,
     };
     products.push(newProduct);
-    await fs.writeFile(productsPath, JSON.stringify(products, null, 2));
+    await this.saveAll(products);
     return newProduct;
+    console.log('Agregando producto:', newProduct);
   }
 
   async updateProduct(id, updates) {
@@ -34,13 +49,15 @@ export default class ProductManager {
     const index = products.findIndex(p => p.id === id);
     if (index === -1) return null;
     products[index] = { ...products[index], ...updates, id };
-    await fs.writeFile(productsPath, JSON.stringify(products, null, 2));
+    await this.saveAll(products);
     return products[index];
   }
 
   async deleteProduct(id) {
-    let products = await this.getAll();
-    products = products.filter(p => p.id !== id);
-    await fs.writeFile(productsPath, JSON.stringify(products, null, 2));
+    const products = await this.getAll();
+    const filtered = products.filter(p => p.id !== id);
+    if (filtered.length === products.length) return false;
+    await this.saveAll(filtered);
+    return true;
   }
 }

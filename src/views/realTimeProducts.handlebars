@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Productos en Tiempo Real</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <h1>🔄 Productos en Tiempo Real</h1>
+
+  <form id="productForm">
+    <input type="text" name="title" placeholder="Título" required />
+    <input type="text" name="description" placeholder="Descripción" required />
+    <input type="text" name="code" placeholder="Código" required />
+    <input type="number" name="price" placeholder="Precio" required />
+    <input type="number" name="stock" placeholder="Stock" required />
+    <input type="text" name="category" placeholder="Categoría" required />
+    <input type="text" name="thumbnails" placeholder="Thumbnails (urls separadas por coma)" />
+    <button type="submit">Agregar Producto</button>
+  </form>
+
+  <ul id="productList">
+    <!-- Productos en tiempo real -->
+  </ul>
+
+    <div id="toast" class="toast hidden"></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/realtime.js"></script>
+</body>
+</html>

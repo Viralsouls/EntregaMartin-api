@@ -9,8 +9,22 @@ const cartsPath = path.join(__dirname, '..', 'data', 'carts.json');
 
 export default class CartManager {
   async getAll() {
-    const data = await fs.readFile(cartsPath, 'utf-8');
-    return JSON.parse(data);
+    try {
+      const data = await fs.readFile(cartsPath, 'utf-8');
+      return JSON.parse(data);
+    } catch (error) {
+      console.error('Error leyendo carritos:', error.message);
+      return [];
+    }
+  }
+
+  async saveAll(data) {
+    try {
+      await fs.writeFile(cartsPath, JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error('Error guardando carritos:', error.message);
+      throw error;
+    }
   }
 
   async getById(id) {
@@ -25,7 +39,7 @@ export default class CartManager {
       products: [],
     };
     carts.push(newCart);
-    await fs.writeFile(cartsPath, JSON.stringify(carts, null, 2));
+    await this.saveAll(carts);
     return newCart;
   }
 
@@ -41,7 +55,7 @@ export default class CartManager {
       cart.products.push({ product: productId, quantity: 1 });
     }
 
-    await fs.writeFile(cartsPath, JSON.stringify(carts, null, 2));
+    await this.saveAll(carts);
     return cart;
   }
 }
