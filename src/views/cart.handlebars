@@ -1,19 +1,23 @@
 <div class="container mt-4">
     <h2 class="mb-4">Mi Carrito de Compras 🛒</h2>
 
-    <div class="list-group">
+    <div id="cart-container" class="list-group">
         {{#if cart.products.length}}
             {{#each cart.products}}
-            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 class="mb-1">{{this.product.title}}</h5>
-                    <p class="mb-1">Precio Unitario: ${{this.product.price}}</p>
-                </div>
-                <span class="badge bg-primary rounded-pill">Cantidad: {{this.quantity}}</span>
-            </div>
+                {{#if this.product}}
+                    <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">{{this.product.title}}</h5>
+                            <p class="mb-1">Precio Unitario: ${{this.product.price}}</p>
+                        </div>
+                        <span class="badge bg-primary rounded-pill">Cantidad: {{this.quantity}}</span>
+                    </div>
+                {{/if}}
             {{/each}}
              <div class="list-group-item list-group-item-action d-flex justify-content-end align-items-center mt-3">
-                <button class="btn btn-success">Finalizar Compra</button>
+                <button id="purchase-btn" class="btn btn-success" onclick="purchaseCart('{{cart._id}}')">
+                    Finalizar Compra
+                </button>
             </div>
         {{else}}
             <div class="alert alert-info" role="alert">
@@ -21,4 +25,43 @@
             </div>
         {{/if}}
     </div>
+    
+    <div id="purchase-result" class="mt-4"></div>
 </div>
+
+<script>
+    async function purchaseCart(cartId) {
+        const resultDiv = document.getElementById('purchase-result');
+        const purchaseBtn = document.getElementById('purchase-btn');
+        
+        purchaseBtn.disabled = true;
+        resultDiv.innerHTML = `<div class="alert alert-info">Procesando tu compra...</div>`;
+
+        try {
+            const response = await fetch(`/api/carts/${cartId}/purchase`, {
+                method: 'POST',
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        <h4>¡Compra Exitosa!</h4>
+                        <p><strong>Código del Ticket:</strong> ${data.ticket.code}</p>
+                        <p><strong>Monto Total:</strong> $${data.ticket.amount}</p>
+                        <p>¡Gracias por tu compra!</p>
+                        <hr>
+                        <p class="mb-0">Los productos sin stock permanecen en tu carrito.</p>
+                    </div>
+                `;
+                document.getElementById('cart-container').style.display = 'none'; // Ocultar carrito
+            } else {
+                resultDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'Error desconocido al procesar la compra.'}</div>`;
+                purchaseBtn.disabled = false;
+            }
+        } catch (error) {
+            resultDiv.innerHTML = `<div class="alert alert-danger">Error de conexión al procesar la compra.</div>`;
+            purchaseBtn.disabled = false;
+        }
+    }
+</script>

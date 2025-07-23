@@ -20,6 +20,7 @@
     "express-session": "^1.18.2",
     "mongoose": "^8.16.4",
     "mongoose-paginate-v2": "^1.9.1",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "uuid": "^11.1.0"
   }
 }

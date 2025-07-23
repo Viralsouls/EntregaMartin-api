@@ -1,9 +1,24 @@
 import { Router } from 'express';
 import { CartModel } from '../models/cart.model.js';
+import { ProductModel } from '../models/product.model.js';
+import { TicketModel } from '../models/ticket.model.js';
 
 const router = Router();
 
-// --- RUTA POST PARA AGREGAR PRODUCTOS ---
+// --- OBTENER UN CARRITO ESPECÍFICO ---
+router.get('/:cid', async (req, res) => {
+    try {
+        const cart = await CartModel.findOne({ _id: req.params.cid }).populate('products.product');
+        if (!cart) {
+            return res.status(404).json({ status: 'error', message: 'Carrito no encontrado' });
+        }
+        res.status(200).json({ status: 'success', payload: cart });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+// --- AGREGAR UN PRODUCTO AL CARRITO ---
 router.post('/:cid/products/:pid', async (req, res) => {
     try {
         const { cid, pid } = req.params;
@@ -32,19 +47,58 @@ router.post('/:cid/products/:pid', async (req, res) => {
     }
 });
 
-// --- OTRAS RUTAS DEL CARRITO ---
-router.get('/:cid', async (req, res) => {
+// --- FINALIZAR LA COMPRA ---
+router.post('/:cid/purchase', async (req, res) => {
     try {
-        const cart = await CartModel.findOne({ _id: req.params.cid }).populate('products.product');
+        const { cid } = req.params;
+        const cart = await CartModel.findById(cid).populate('products.product');
+
         if (!cart) {
             return res.status(404).json({ status: 'error', message: 'Carrito no encontrado' });
         }
-        res.status(200).json({ status: 'success', payload: cart });
+
+        const productsToPurchase = [];
+        const productsToKeepInCart = [];
+        let totalAmount = 0;
+
+        for (const item of cart.products) {
+            if (!item.product) continue; // Salta si el producto es null
+            
+            if (item.product.stock >= item.quantity) {
+                productsToPurchase.push(item);
+                totalAmount += item.product.price * item.quantity;
+                await ProductModel.updateOne({ _id: item.product._id }, { $inc: { stock: -item.quantity } });
+            } else {
+                productsToKeepInCart.push(item);
+            }
+        }
+
+        if (productsToPurchase.length === 0) {
+            return res.status(400).json({ status: 'error', message: 'No hay productos con stock suficiente para realizar la compra.' });
+        }
+
+        const ticket = await TicketModel.create({
+            amount: totalAmount,
+            purchaser: 'user@example.com', // Esto vendría de req.session.user.email
+        });
+
+        cart.products = productsToKeepInCart;
+        await cart.save();
+
+        res.status(200).json({ 
+            status: 'success', 
+            message: 'Compra realizada con éxito!', 
+            ticket: ticket,
+            productsNotInStock: productsToKeepInCart.map(item => item.product._id)
+        });
+
     } catch (error) {
-        res.status(500).json({ status: 'error', message: error.message });
+        console.error('Error al procesar la compra:', error);
+        res.status(500).json({ status: 'error', message: 'Error interno del servidor.' });
     }
 });
 
+// --- ACTUALIZAR UN CARRITO COMPLETO CON UN ARRAY DE PRODUCTOS ---
 router.put('/:cid', async (req, res) => {
     try {
         const { cid } = req.params;
@@ -60,6 +114,7 @@ router.put('/:cid', async (req, res) => {
     }
 });
 
+// --- ACTUALIZAR LA CANTIDAD DE UN SOLO PRODUCTO ---
 router.put('/:cid/products/:pid', async (req, res) => {
     try {
         const { cid, pid } = req.params;
@@ -82,6 +137,7 @@ router.put('/:cid/products/:pid', async (req, res) => {
     }
 });
 
+// --- ELIMINAR UN PRODUCTO DEL CARRITO ---
 router.delete('/:cid/products/:pid', async (req, res) => {
     try {
         const { cid, pid } = req.params;
@@ -98,6 +154,7 @@ router.delete('/:cid/products/:pid', async (req, res) => {
     }
 });
 
+// --- VACIAR EL CARRITO ---
 router.delete('/:cid', async (req, res) => {
     try {
         const { cid } = req.params;
