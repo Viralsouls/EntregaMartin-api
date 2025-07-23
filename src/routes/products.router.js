@@ -1,116 +1,112 @@
 import { Router } from 'express';
-import ProductManager from '../managers/ProductManager.js';
+import { ProductModel } from '../models/product.model.js';
 
 const router = Router();
-const productManager = new ProductManager('./src/data/products.json');
 
-// Helper: validar producto (para POST y PUT)
-function validateProduct(data, isUpdate = false) {
-  const { title, description, code, price, status, stock, category, thumbnails } = data;
-
-  if (!isUpdate) { // POST requiere todos los campos
-    if (
-      !title || typeof title !== 'string' ||
-      !description || typeof description !== 'string' ||
-      !code || typeof code !== 'string' ||
-      typeof price !== 'number' ||
-      typeof status !== 'boolean' ||
-      typeof stock !== 'number' ||
-      !category || typeof category !== 'string' ||
-      !Array.isArray(thumbnails) || !thumbnails.every(t => typeof t === 'string')
-    ) {
-      return false;
-    }
-  } else { // PUT permite actualizar solo campos válidos
-    const allowedFields = ['title', 'description', 'code', 'price', 'status', 'stock', 'category', 'thumbnails'];
-    for (const key in data) {
-      if (!allowedFields.includes(key)) return false;
-
-      const val = data[key];
-      switch(key) {
-        case 'title':
-        case 'description':
-        case 'code':
-        case 'category':
-          if (typeof val !== 'string') return false;
-          break;
-        case 'price':
-        case 'stock':
-          if (typeof val !== 'number') return false;
-          break;
-        case 'status':
-          if (typeof val !== 'boolean') return false;
-          break;
-        case 'thumbnails':
-          if (!Array.isArray(val) || !val.every(t => typeof t === 'string')) return false;
-          break;
-      }
-    }
-  }
-  return true;
-}
-
-// GET /api/products/
+// GET / con paginación, filtros y ordenamiento (CORRECTO)
 router.get('/', async (req, res) => {
-  const products = await productManager.getAll();
-  res.json(products);
+    try {
+        const { limit = 10, page = 1, sort, query } = req.query;
+
+        const options = {
+            page: parseInt(page, 10),
+            limit: parseInt(limit, 10),
+            lean: true
+        };
+
+        if (sort) {
+            options.sort = { price: sort === 'asc' ? 1 : -1 };
+        }
+
+        const searchQuery = {};
+        if (query) {
+            // Puedes hacer el query más flexible, por ejemplo, por categoría o disponibilidad
+            searchQuery.category = query;
+        }
+
+        const result = await ProductModel.paginate(searchQuery, options);
+        
+        const baseUrl = `${req.protocol}://${req.get('host')}${req.originalUrl.split('?')[0]}`;
+        const prevLink = result.hasPrevPage ? `${baseUrl}?page=${result.prevPage}&limit=${limit}&query=${query || ''}&sort=${sort || ''}` : null;
+        const nextLink = result.hasNextPage ? `${baseUrl}?page=${result.nextPage}&limit=${limit}&query=${query || ''}&sort=${sort || ''}` : null;
+
+        res.status(200).json({
+            status: 'success',
+            payload: result.docs,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevLink: prevLink,
+            nextLink: nextLink
+        });
+
+    } catch (error) {
+        console.error("Error al obtener productos:", error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Error al obtener los productos.'
+        });
+    }
 });
 
-// GET /api/products/:pid
+// GET /api/products/:pid usando Mongoose
 router.get('/:pid', async (req, res) => {
-  const pid = Number(req.params.pid);
-  const product = await productManager.getById(pid);
-  if (!product) return res.status(404).json({ error: 'Producto no encontrado' });
-  res.json(product);
+    try {
+        const { pid } = req.params;
+        const product = await ProductModel.findById(pid);
+        if (!product) {
+            return res.status(404).json({ status: 'error', message: 'Producto no encontrado' });
+        }
+        res.status(200).json({ status: 'success', payload: product });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
 });
 
-// POST /api/products/
+// POST /api/products/ usando Mongoose
 router.post('/', async (req, res) => {
-  const productData = req.body;
-  if (!validateProduct(productData)) {
-    return res.status(400).json({ error: 'Datos de producto inválidos o incompletos' });
-  }
-
-  try {
-    const newProduct = await productManager.addProduct(productData);
-    res.status(201).json(newProduct);
-  } catch (error) {
-  console.error('Error creando producto:', error.message);
-  res.status(500).json({ error: 'Error al crear producto', detail: error.message });
-  }
+    try {
+        const productData = req.body;
+        // La validación ahora la hace Mongoose según tu `product.model.js`
+        const newProduct = await ProductModel.create(productData);
+        res.status(201).json({ status: 'success', payload: newProduct });
+    } catch (error) {
+        // Si hay un error de validación de Mongoose, lo informamos
+        res.status(400).json({ status: 'error', message: error.message });
+    }
 });
 
-// PUT /api/products/:pid
+// PUT /api/products/:pid usando Mongoose
 router.put('/:pid', async (req, res) => {
-  const pid = Number(req.params.pid);
-  const updates = req.body;
+    try {
+        const { pid } = req.params;
+        const updates = req.body;
 
-  if ('id' in updates) return res.status(400).json({ error: 'No se puede modificar el id del producto' });
-  if (!validateProduct(updates, true)) return res.status(400).json({ error: 'Datos inválidos para actualizar' });
-
-  const product = await productManager.getById(pid);
-  if (!product) return res.status(404).json({ error: 'Producto no encontrado' });
-
-  try {
-    const updatedProduct = await productManager.updateProduct(pid, updates);
-    res.json(updatedProduct);
-  } catch (error) {
-    res.status(500).json({ error: 'Error al actualizar producto' });
-  }
+        const updatedProduct = await ProductModel.findByIdAndUpdate(pid, updates, { new: true });
+        if (!updatedProduct) {
+            return res.status(404).json({ status: 'error', message: 'Producto no encontrado' });
+        }
+        res.status(200).json({ status: 'success', payload: updatedProduct });
+    } catch (error) {
+        res.status(400).json({ status: 'error', message: error.message });
+    }
 });
 
-// DELETE /api/products/:pid
+// DELETE /api/products/:pid usando Mongoose
 router.delete('/:pid', async (req, res) => {
-  const pid = Number(req.params.pid);
-  const product = await productManager.getById(pid);
-  if (!product) return res.status(404).json({ error: 'Producto no encontrado' });
-
-  try {
-    await productManager.deleteProduct(pid);
-    res.json({ message: 'Producto eliminado correctamente' });
-  } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar producto' });
-  }
+    try {
+        const { pid } = req.params;
+        const deletedProduct = await ProductModel.findByIdAndDelete(pid);
+        if (!deletedProduct) {
+            return res.status(404).json({ status: 'error', message: 'Producto no encontrado' });
+        }
+        res.status(200).json({ status: 'success', message: 'Producto eliminado correctamente' });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
 });
 
 export default router;

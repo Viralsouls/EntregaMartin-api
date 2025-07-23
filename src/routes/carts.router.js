@@ -1,40 +1,81 @@
 import { Router } from 'express';
-import CartManager from '../managers/CartManager.js';
+import { CartModel } from '../models/cart.model.js';
 
 const router = Router();
-const cartManager = new CartManager('./src/data/carts.json');
 
-// POST /api/carts/ => crea carrito nuevo
-router.post('/', async (req, res) => {
-  try {
-    const newCart = await cartManager.createCart();
-    res.status(201).json(newCart);
-  } catch (error) {
-    console.error('Error al crear carrito:', error);
-    res.status(500).json({ error: 'Error creando carrito', detail: error.message });
-  }
-});
-
-// GET /api/carts/:cid => listar productos del carrito
 router.get('/:cid', async (req, res) => {
-  const cid = Number(req.params.cid);
-  const cart = await cartManager.getById(cid);
-  if (!cart) return res.status(404).json({ error: 'Carrito no encontrado' });
-  res.json(cart.products);
+    try {
+        const cart = await CartModel.findOne({ _id: req.params.cid });
+        if (!cart) {
+            return res.status(404).json({ status: 'error', message: 'Carrito no encontrado' });
+        }
+        res.status(200).json({ status: 'success', payload: cart });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
 });
 
-// POST /api/carts/:cid/product/:pid => agregar producto al carrito
-router.post('/:cid/product/:pid', async (req, res) => {
-  const cid = Number(req.params.cid);
-  const pid = Number(req.params.pid);
+router.delete('/:cid/products/:pid', async (req, res) => {
+    try {
+        const { cid, pid } = req.params;
+        const cart = await CartModel.findById(cid);
+        if (!cart) return res.status(404).json({ status: 'error', message: 'Carrito no encontrado' });
 
-  try {
-    const updatedCart = await cartManager.addProductToCart(cid, pid);
-    if (!updatedCart) return res.status(404).json({ error: 'Carrito no encontrado' });
-    res.json(updatedCart);
-  } catch {
-    res.status(500).json({ error: 'Error agregando producto al carrito' });
-  }
+        cart.products = cart.products.filter(item => item.product.toString() !== pid);
+        await cart.save();
+        res.status(200).json({ status: 'success', payload: cart });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+router.put('/:cid', async (req, res) => {
+    try {
+        const { cid } = req.params;
+        const { products } = req.body;
+        if (!Array.isArray(products)) return res.status(400).json({ status: 'error', message: 'Formato de productos inválido' });
+
+        const cart = await CartModel.findByIdAndUpdate(cid, { products }, { new: true });
+        if (!cart) return res.status(404).json({ status: 'error', message: 'Carrito no encontrado' });
+        
+        res.status(200).json({ status: 'success', payload: cart });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+router.put('/:cid/products/:pid', async (req, res) => {
+    try {
+        const { cid, pid } = req.params;
+        const { quantity } = req.body;
+        if (typeof quantity !== 'number' || quantity < 1) {
+            return res.status(400).json({ status: 'error', message: 'La cantidad es inválida' });
+        }
+        
+        const cart = await CartModel.findOneAndUpdate(
+            { _id: cid, 'products.product': pid },
+            { $set: { 'products.$.quantity': quantity } },
+            { new: true }
+        ).populate('products.product');
+
+        if (!cart) return res.status(404).json({ status: 'error', message: 'Producto no encontrado en el carrito' });
+
+        res.status(200).json({ status: 'success', payload: cart });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+router.delete('/:cid', async (req, res) => {
+    try {
+        const { cid } = req.params;
+        const cart = await CartModel.findByIdAndUpdate(cid, { products: [] }, { new: true });
+        if (!cart) return res.status(404).json({ status: 'error', message: 'Carrito no encontrado' });
+        
+        res.status(200).json({ status: 'success', payload: cart });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
 });
 
 export default router;
