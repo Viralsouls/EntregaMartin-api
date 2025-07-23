@@ -10,6 +10,7 @@
                     <p class="card-text">{{this.description}}</p>
                     <p class="card-text"><strong>Categoría:</strong> {{this.category}}</p>
                     <p class="card-text"><strong>Precio:</strong> ${{this.price}}</p>
+                    <a href="/products/{{this._id}}" class="btn btn-outline-primary btn-sm">Ver Detalles</a>
                 </div>
                 <div class="card-footer">
                     <button class="btn btn-primary" onclick="addToCart('{{../user.cartId}}', '{{this._id}}')">
@@ -43,26 +44,27 @@
 </div>
 
 <script>
-    async function addToCart(cartId, productId) {
-        if (!cartId || cartId === 'ID_DE_CARRITO_DE_EJEMPLO') {
-            alert('Error: ID de carrito no configurado.');
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
-                method: 'POST', // O PUT, dependiendo de tu lógica para agregar/actualizar
-            });
-
-            if (response.ok) {
-                alert('¡Producto agregado al carrito!');
-            } else {
-                const errorData = await response.json();
-                alert(`Error al agregar producto: ${errorData.message}`);
-            }
-        } catch (error) {
-            console.error('Error de red:', error);
-            alert('Error de conexión al agregar el producto.');
-        }
+    function addToCart(cartId, productId) {
+        fetch(`/api/carts/${cartId}/products/${productId}`, { method: 'POST' })
+            .then(res => {
+                if (res.ok) {
+                    Toastify({
+                        text: "Producto agregado al carrito",
+                        duration: 3000,
+                        gravity: "bottom", // `top` or `bottom`
+                        position: "right", // `left`, `center` or `right`
+                        style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
+                    }).showToast();
+                } else {
+                    Toastify({
+                        text: "Error al agregar el producto",
+                        duration: 3000,
+                        gravity: "bottom",
+                        position: "right",
+                        style: { background: "linear-gradient(to right, #ff5f6d, #ffc371)" }
+                    }).showToast();
+                }
+            })
+            .catch(err => console.error(err));
     }
 </script>

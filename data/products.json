@@ -1,71 +1,202 @@
 [
   {
-    "title": "Camiseta Deportiva",
-    "description": "Camiseta para correr, ligera y transpirable",
-    "code": "CD001",
-    "price": 25.99,
+    "title": "Laptop UltraBook Pro X",
+    "description": "Potencia y portabilidad en un diseño elegante. Ideal para profesionales creativos y desarrolladores.",
+    "price": 1499.99,
+    "code": "LP-UBPX-01",
+    "stock": 35,
+    "category": "Electrónica",
     "status": true,
-    "stock": 50,
-    "category": "Ropa",
-    "thumbnails": [
-      "img/camiseta1.jpg",
-      "img/camiseta2.jpg"
-    ],
-    "id": 1
+    "thumbnails": ["https://i.imgur.com/example-laptop.jpg"]
   },
   {
-    "title": "Guantes",
-    "description": "Guantes para invierno",
-    "code": "GI032",
-    "price": 19.99,
+    "title": "Smartphone Nova 11",
+    "description": "Cámara de alta resolución y batería de larga duración para mantenerte conectado todo el día.",
+    "price": 899.50,
+    "code": "SP-NOVA11-01",
+    "stock": 120,
+    "category": "Electrónica",
     "status": true,
-    "stock": 100,
-    "category": "Ropa",
-    "thumbnails": [
-      "img/guantes1.jpg",
-      "img/guantes2.jpg"
-    ],
-    "id": 2
+    "thumbnails": ["https://i.imgur.com/example-phone.jpg"]
   },
   {
-    "title": "Falda",
-    "description": "Falda tipo coctel",
-    "code": "FC303",
-    "price": 19.99,
+    "title": "Café de Origen Colombiano",
+    "description": "Granos de café arábica seleccionados de las montañas de Colombia, con notas de chocolate y cítricos.",
+    "price": 15.99,
+    "code": "CF-COL-01",
+    "stock": 300,
+    "category": "Alimentos",
     "status": true,
-    "stock": 100,
-    "category": "Ropa",
-    "thumbnails": [
-      "img/falda1.jpg",
-      "img/falda2.jpg"
-    ],
-    "id": 3
+    "thumbnails": ["https://i.imgur.com/example-coffee.jpg"]
   },
   {
-    "title": "Camisa formal",
-    "description": "Camisa formal",
-    "code": "CF001",
-    "price": 37,
-    "stock": 15,
-    "category": "Camisa",
-    "thumbnails": [
-      "img/camisetaf1.jpg",
-      "imgh/camisetaf2.jpg"
-    ],
+    "title": "Zapatillas Runner Flex",
+    "description": "Calzado deportivo con tecnología de amortiguación avanzada, perfecto para corredores.",
+    "price": 120.00,
+    "code": "ZP-RFLEX-01",
+    "stock": 250,
+    "category": "Ropa y Calzado",
     "status": true,
-    "id": 4
+    "thumbnails": ["https://i.imgur.com/example-shoes.jpg"]
   },
   {
-    "title": "Pullover",
-    "description": "Pullover de lana suave",
-    "code": "PO0001",
-    "price": 45,
-    "stock": 30,
-    "category": "Pullover",
-    "thumbnails": [
-      "img/pullover1.jpg"
-    ],
+    "title": "Libro 'Crónicas de la Nube'",
+    "description": "Una novela de ciencia ficción que explora los límites de la inteligencia artificial y la conciencia.",
+    "price": 22.50,
+    "code": "LB-CNUBE-01",
+    "stock": 80,
+    "category": "Libros",
     "status": true,
-    "id": 5
+    "thumbnails": ["https://i.imgur.com/example-book.jpg"]
+  },
+  {
+    "title": "Teclado Mecánico RGB",
+    "description": "Teclado para gaming con switches mecánicos, respuesta táctil y retroiluminación RGB personalizable.",
+    "price": 95.00,
+    "code": "KB-RGB-01",
+    "stock": 90,
+    "category": "Accesorios",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-keyboard.jpg"]
+  },
+  {
+    "title": "Mochila de Viaje Explorer",
+    "description": "Mochila resistente al agua de 40L con múltiples compartimentos, ideal para aventuras.",
+    "price": 85.99,
+    "code": "BP-EXPL-01",
+    "stock": 110,
+    "category": "Accesorios",
+    "status": false,
+    "thumbnails": ["https://i.imgur.com/example-backpack.jpg"]
+  },
+  {
+    "title": "Auriculares Inalámbricos Sonus",
+    "description": "Calidad de sonido Hi-Fi con cancelación de ruido activa y hasta 30 horas de autonomía.",
+    "price": 199.99,
+    "code": "HP-SONUS-01",
+    "stock": 150,
+    "category": "Electrónica",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-headphones.jpg"]
+  },
+  {
+    "title": "Camiseta de Algodón Orgánico",
+    "description": "Camiseta básica y suave, fabricada con 100% algodón orgánico certificado.",
+    "price": 29.99,
+    "code": "TS-ORG-01",
+    "stock": 400,
+    "category": "Ropa y Calzado",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-tshirt.jpg"]
+  },
+  {
+    "title": "Botella de Agua Reutilizable",
+    "description": "Botella de acero inoxidable de 750ml que mantiene tus bebidas frías por 24 horas o calientes por 12.",
+    "price": 25.00,
+    "code": "WB-STEEL-01",
+    "stock": 500,
+    "category": "Hogar",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-bottle.jpg"]
+  },
+  {
+    "title": "Smartwatch FitLife 2",
+    "description": "Monitor de actividad física, ritmo cardíaco, oxígeno en sangre y notificaciones inteligentes.",
+    "price": 150.00,
+    "code": "SW-FIT2-01",
+    "stock": 130,
+    "category": "Electrónica",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-watch.jpg"]
+  },
+  {
+    "title": "Aceite de Oliva Extra Virgen",
+    "description": "Aceite de oliva prensado en frío, de origen español, con baja acidez y sabor frutado.",
+    "price": 18.50,
+    "code": "AO-EV-01",
+    "stock": 200,
+    "category": "Alimentos",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-oil.jpg"]
+  },
+  {
+    "title": "Juego de Mesa 'Colonizadores'",
+    "description": "Juego de estrategia y gestión de recursos para 3-4 jugadores. ¡Horas de diversión garantizadas!",
+    "price": 45.00,
+    "code": "BG-COL-01",
+    "stock": 60,
+    "category": "Juguetes y Juegos",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-boardgame.jpg"]
+  },
+  {
+    "title": "Silla de Oficina Ergonómica",
+    "description": "Silla con soporte lumbar ajustable, reposabrazos 4D y malla transpirable para máximo confort.",
+    "price": 350.00,
+    "code": "OC-ERGO-01",
+    "stock": 40,
+    "category": "Hogar",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-chair.jpg"]
+  },
+  {
+    "title": "Monitor Curvo Ultrawide 34\"",
+    "description": "Monitor con resolución QHD para una experiencia inmersiva en juegos y productividad.",
+    "price": 550.00,
+    "code": "MN-UW34-01",
+    "stock": 55,
+    "category": "Electrónica",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-monitor.jpg"]
+  },
+  {
+    "title": "Vino Tinto Reserva",
+    "description": "Vino de uva Malbec con 12 meses de añejamiento en barrica de roble. Ideal para carnes rojas.",
+    "price": 35.00,
+    "code": "WN-MALB-01",
+    "stock": 180,
+    "category": "Alimentos",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-wine.jpg"]
+  },
+  {
+    "title": "Chaqueta Impermeable Trekker",
+    "description": "Chaqueta ligera y empacable, con costuras selladas para una protección total contra la lluvia.",
+    "price": 110.00,
+    "code": "JK-TRK-01",
+    "stock": 95,
+    "category": "Ropa y Calzado",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-jacket.jpg"]
+  },
+  {
+    "title": "Cámara de Acción 4K",
+    "description": "Graba tus aventuras en 4K a 60fps, sumergible hasta 30 metros sin carcasa.",
+    "price": 250.00,
+    "code": "AC-4K-01",
+    "stock": 70,
+    "category": "Electrónica",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-actioncam.jpg"]
+  },
+  {
+    "title": "Lámpara de Escritorio LED",
+    "description": "Lámpara con 5 niveles de brillo y 3 modos de color, con puerto de carga USB integrado.",
+    "price": 45.50,
+    "code": "DL-LED-01",
+    "stock": 220,
+    "category": "Hogar",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-lamp.jpg"]
+  },
+  {
+    "title": "Yogur Griego Natural",
+    "description": "Yogur cremoso alto en proteínas, sin azúcares añadidos. Pack de 4 unidades.",
+    "price": 5.99,
+    "code": "YG-GRK-01",
+    "stock": 450,
+    "category": "Alimentos",
+    "status": true,
+    "thumbnails": ["https://i.imgur.com/example-yogurt.jpg"]
   }
 ]

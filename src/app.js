@@ -56,7 +56,7 @@ app.use(async (req, res, next) => {
             // Si hay un error, igual continuamos para no bloquear la app
         }
     }
-    next(); // <-- ESTA LÍNEA ES LA QUE FALTABA. Le dice a Express que continúe.
+    next();
 });
 
 // --- HANDLEBARS ---

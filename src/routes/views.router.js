@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
     res.redirect('/products');
 });
 
-// Vista de productos con paginación y acceso al carrito de la sesión
+// Vista de productos con paginación
 router.get('/products', async (req, res) => {
     try {
         const { limit = 10, page = 1, sort, query } = req.query;
@@ -32,7 +32,6 @@ router.get('/products', async (req, res) => {
             prevLink: result.hasPrevPage ? `/products?page=${result.prevPage}&limit=${limit}` : null,
             nextLink: result.hasNextPage ? `/products?page=${result.nextPage}&limit=${limit}` : null,
             user: {
-                // Pasamos el ID del carrito desde la sesión a la vista
                 cartId: req.session.cartId 
             }
         });
@@ -42,14 +41,14 @@ router.get('/products', async (req, res) => {
     }
 });
 
-// Vista de un carrito específico
+// --- RUTA PARA VER UN CARRITO ESPECÍFICO ---
 router.get('/carts/:cid', async (req, res) => {
     try {
         const { cid } = req.params;
-        const cart = await CartModel.findById(cid).lean();
+        const cart = await CartModel.findById(cid).populate('products.product').lean();
         
         if (!cart) {
-            return res.status(404).send("Carrito no encontrado");
+            return res.status(404).render('error', { message: 'Carrito no encontrado' });
         }
         
         res.render('cart', { 
@@ -58,7 +57,30 @@ router.get('/carts/:cid', async (req, res) => {
         });
     } catch (error) {
         console.error("Error al cargar la vista del carrito:", error);
-        res.status(500).send("Error interno al cargar la vista del carrito");
+        res.status(500).render('error', { message: 'Error interno al cargar la vista del carrito' });
+    }
+});
+
+// --- RUTA PARA VER EL DETALLE DE UN PRODUCTO ---
+router.get('/products/:pid', async (req, res) => {
+    try {
+        const { pid } = req.params;
+        const product = await ProductModel.findById(pid).lean();
+
+        if (!product) {
+            return res.status(404).render('error', { message: 'Producto no encontrado' });
+        }
+
+        res.render('product-detail', {
+            title: product.title,
+            product,
+            user: {
+                cartId: req.session.cartId
+            }
+        });
+    } catch (error) {
+        console.error("Error al cargar la vista de detalle del producto:", error);
+        res.status(500).render('error', { message: 'Error interno al cargar la vista' });
     }
 });
 
