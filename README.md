@@ -1,132 +1,111 @@
-# 🛒 Segunda Entrega - API de Productos y Carritos (con Websockets + Handlebars)
+# **🛒 Proyecto Final \- Backend de E-commerce**
 
-Este proyecto es la **Segunda Entrega** del curso de Backend, desarrollado por **Juan Martin**.  
-Se trata de una API RESTful construida con **Node.js** y **Express**, con persistencia local en archivos `.json`, motor de plantillas **Handlebars**, y actualizaciones en tiempo real mediante **Socket.IO**.
+Este proyecto es la Entrega Final del curso de Backend, desarrollado por Juan Martin.  
+Se trata de una API RESTful construida con Node.js y Express, con persistencia de datos en MongoDB, motor de plantillas Handlebars, y un flujo de compra completo.
 
----
+## **🚀 Características principales**
 
-## 🚀 Características principales
+* **API RESTful Completa:** Endpoints para la gestión de productos y carritos (CRUD).  
+* **Persistencia en MongoDB:** Uso de **Mongoose** para modelar y gestionar los datos en una base de datos NoSQL.  
+* **Consultas Avanzadas:** La API de productos soporta **paginación**, **filtrado** por categoría y **ordenamiento** por precio.  
+* **Gestión de Sesiones:** Carritos de compra persistentes para cada visitante usando express-session y connect-mongo.  
+* **Lógica de Compra Completa:** Flujo para finalizar una compra que genera un **ticket**, actualiza el **stock** y gestiona productos sin disponibilidad.  
+* **Vistas Dinámicas:** Interfaz renderizada en el servidor con **Handlebars** para visualizar productos, detalles y carritos.  
+* **Seguridad:** Manejo de variables de entorno con **Dotenv** para proteger credenciales de la base de datos.
 
-- Gestión completa de productos (CRUD).
-- Gestión de carritos de compra.
-- Persistencia de datos en archivos JSON (`products.json`, `carts.json`).
-- Vista dinámica de productos usando **Handlebars** (`home.handlebars`).
-- Vista en tiempo real de productos con **WebSockets** (`realTimeProducts.handlebars`).
-- Estilo limpio y moderno con CSS personalizado.
-- Sistema de **notificaciones tipo toast** y validación de formularios en frontend.
+## **📁 Estructura del Proyecto**
 
----
-
-## 📁 Estructura del Proyecto
-
-```
-primerEntregaMartin-api/
-├── src/
-│   ├── data/
-│   │   ├── products.json
-│   │   └── carts.json
-│   ├── managers/
-│   │   ├── ProductManager.js
-│   │   └── CartManager.js
-│   ├── public/
-│   │   ├── css/
-│   │   │   └── styles.css
-│   │   └── js/
-│   │       └── realtime.js
-│   ├── routes/
-│   │   ├── products.router.js
-│   │   ├── carts.router.js
-│   │   └── views.router.js
-│   ├── views/
-│   │   ├── home.handlebars
-│   │   ├── realTimeProducts.handlebars
-│   │   └── layouts/
-│   │       └── main.handlebars
-│   ├── app.js
-│   └── server.js
-├── package.json
+EntregaFinalMartin/  
+├── src/  
+│   ├── data/  
+│   │   └── products.json  (Para el seeding inicial)  
+│   ├── models/  
+│   │   ├── product.model.js  
+│   │   ├── cart.model.js  
+│   │   └── ticket.model.js  
+│   ├── public/  
+│   ├── routes/  
+│   │   ├── products.router.js  
+│   │   ├── carts.router.js  
+│   │   └── views.router.js  
+│   ├── views/  
+│   │   ├── products.handlebars  
+│   │   ├── product-detail.handlebars  
+│   │   ├── cart.handlebars  
+│   │   ├── error.handlebars  
+│   │   └── layouts/  
+│   │       └── main.handlebars  
+│   ├── app.js  
+│   └── seed.js  
+├── .env  
+├── .gitignore  
+├── package.json  
 └── README.md
-```
 
----
+## **⚙️ Instalación y ejecución**
 
-## ⚙️ Instalación y ejecución
+\# 1\. Clonar el repositorio  
+git clone \[https://github.com/Viralsouls/EntregaFinalMartin.git\](https://github.com/Viralsouls/EntregaFinalMartin.git)  
+cd EntregaFinalMartin
 
-```bash
-git clone https://github.com/Viralsouls/primerEntregaMartin-api.git
-cd primerEntregaMartin-api
+\# 2\. Instalar dependencias  
 npm install
+
+\# 3\. Configurar el archivo .env (usar .env.example como guía)
+
+\# 4\. Poblar la base de datos con datos de ejemplo  
+npm run seed
+
+\# 5\. Iniciar el servidor en modo desarrollo  
 npm run dev
-```
 
-📡 El servidor escucha en el puerto `8080`
+📡 El servidor escucha en el puerto 8080\.
 
----
+## **🧪 Endpoints HTTP**
 
-## 🧪 Endpoints HTTP
+### **🔹 Productos: /api/products**
 
-### 🔹 Productos: `/api/products`
+| Método | Ruta | Descripción |
+| :---- | :---- | :---- |
+| GET | / | Obtener una lista paginada de productos. Acepta limit, page, sort, query. |
+| GET | /:pid | Obtener un producto específico por su ID. |
+| POST | / | Crear un nuevo producto. |
+| PUT | /:pid | Actualizar un producto por su ID. |
+| DELETE | /:pid | Eliminar un producto por su ID. |
 
-| Método | Ruta  | Descripción                   |
-| ------ | ----- | ----------------------------- |
-| GET    | /     | Obtener todos los productos   |
-| GET    | /:pid | Obtener un producto por ID    |
-| POST   | /     | Crear un nuevo producto       |
-| PUT    | /:pid | Actualizar un producto por ID |
-| DELETE | /:pid | Eliminar un producto por ID   |
+### **🔹 Carritos: /api/carts**
 
-#### 📥 Ejemplo JSON para `POST /api/products`:
+| Método | Ruta | Descripción |
+| :---- | :---- | :---- |
+| POST | /:cid/products/:pid | Agregar un producto al carrito (o incrementar su cantidad). |
+| POST | /:cid/purchase | Finalizar el proceso de compra para un carrito. |
+| GET | /:cid | Obtener los productos de un carrito por su ID. |
+| PUT | /:cid/products/:pid | Actualizar la cantidad de un producto en el carrito. |
+| DELETE | /:cid/products/:pid | Eliminar un producto específico del carrito. |
+| DELETE | /:cid | Eliminar todos los productos del carrito. |
 
-```json
-{
-  "title": "Camiseta",
-  "description": "Camiseta deportiva",
-  "code": "CAM001",
-  "price": 25.99,
-  "status": true,
-  "stock": 100,
-  "category": "Ropa",
-  "thumbnails": ["img1.jpg", "img2.jpg"]
-}
-```
+## **🖥️ Vistas con Handlebars**
 
----
+### **📍 [http://localhost:8080/products](https://www.google.com/search?q=http://localhost:8080/products)**
 
-### 🔹 Carritos: `/api/carts`
+* Muestra la lista de productos paginada. Permite agregar productos al carrito.
 
-| Método | Ruta               | Descripción                                  |
-| ------ | ------------------ | -------------------------------------------- |
-| POST   | /                  | Crear un nuevo carrito                       |
-| GET    | /:cid              | Obtener los productos de un carrito por ID   |
-| POST   | /:cid/product/:pid | Agregar un producto al carrito (aumenta qty) |
+### **📍 http://localhost:8080/products/:pid**
 
----
+* Muestra la vista de detalle de un producto específico.
 
-## 🖥️ Vistas con Handlebars
+### **📍 [http://localhost:8080/carts/:cid](https://www.google.com/search?q=http://localhost:8080/carts/:cid)**
 
-### 📍 [`http://localhost:8080/`](http://localhost:8080/)
+* Muestra el contenido de un carrito de compras y permite finalizar la compra.
 
-- Muestra los productos cargados de forma estática usando `home.handlebars`.
+## **📄 Notas técnicas**
 
-### 📍 [`http://localhost:8080/realtimeproducts`](http://localhost:8080/realtimeproducts)
+* IDs de MongoDB generados automáticamente.  
+* Persistencia de datos robusta con MongoDB.  
+* Estructura modular y organizada para facilitar el mantenimiento.  
+* Experiencia de usuario mejorada con notificaciones "toast" y navegación clara.
 
-- Vista dinámica con WebSocket para crear y eliminar productos en tiempo real.
-- Al agregar o eliminar un producto, la lista se actualiza automáticamente.
-- Validación de campos y sistema de feedback visual con **toasts**.
-- Si no hay productos cargados, muestra un mensaje amigable.
+## **🧑‍💻 Autor**
 
----
-
-## 📄 Notas técnicas
-
-- IDs generados automáticamente.
-- Persistencia en archivos locales `.json`.
-- Estructura modular y organizada.
-- Estilo profesional y experiencia de usuario mejorada.
-
----
-
-## 🧑‍💻 Autor
-
-**Juan Martin**  
-GitHub: [@Viralsouls](https://github.com/Viralsouls)
+Juan Martin  
+GitHub: @Viralsouls
