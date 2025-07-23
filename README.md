@@ -98,14 +98,6 @@ Este proyecto cumple con los requisitos de entrega final del bootcamp de backend
 
 ---
 
-## 📝 Sugerencias de mejora
-
-- Usar AJAX o fetch para interacciones más fluidas
-- Agregar sistemas de autenticación/usuarios (registro/login)
-- Implementar un diseño atractivo con Bootstrap o Tailwind
-
----
-
 ## 🧑‍💻 Autor
 
 **Juan Martín** (Viralsouls)  
