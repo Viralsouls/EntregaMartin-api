@@ -1,111 +1,118 @@
-# **🛒 Proyecto Final \- Backend de E-commerce**
 
-Este proyecto es la Entrega Final del curso de Backend, desarrollado por Juan Martin.  
-Se trata de una API RESTful construida con Node.js y Express, con persistencia de datos en MongoDB, motor de plantillas Handlebars, y un flujo de compra completo.
+# 📦 Entrega Final: Backend Ecommerce
 
-## **🚀 Características principales**
+[![Node.js](https://img.shields.io/badge/Node.js-18.x-green.svg)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-5.x-brightgreen.svg)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-blue.svg)](https://www.mongodb.com/)
+[![Mongoose](https://img.shields.io/badge/Mongoose-6.x-red.svg)](https://mongoosejs.com/)
+[![Handlebars](https://img.shields.io/badge/Handlebars-Express-orange.svg)](https://handlebarsjs.com/)
+[![Socket.io](https://img.shields.io/badge/Socket.io-4.x-blue.svg)](https://socket.io/)
+[![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)]()
 
-* **API RESTful Completa:** Endpoints para la gestión de productos y carritos (CRUD).  
-* **Persistencia en MongoDB:** Uso de **Mongoose** para modelar y gestionar los datos en una base de datos NoSQL.  
-* **Consultas Avanzadas:** La API de productos soporta **paginación**, **filtrado** por categoría y **ordenamiento** por precio.  
-* **Gestión de Sesiones:** Carritos de compra persistentes para cada visitante usando express-session y connect-mongo.  
-* **Lógica de Compra Completa:** Flujo para finalizar una compra que genera un **ticket**, actualiza el **stock** y gestiona productos sin disponibilidad.  
-* **Vistas Dinámicas:** Interfaz renderizada en el servidor con **Handlebars** para visualizar productos, detalles y carritos.  
-* **Seguridad:** Manejo de variables de entorno con **Dotenv** para proteger credenciales de la base de datos.
+---
 
-## **📁 Estructura del Proyecto**
+## 📘 Descripción
 
-EntregaFinalMartin/  
-├── src/  
-│   ├── data/  
-│   │   └── products.json  (Para el seeding inicial)  
-│   ├── models/  
-│   │   ├── product.model.js  
-│   │   ├── cart.model.js  
-│   │   └── ticket.model.js  
-│   ├── public/  
-│   ├── routes/  
-│   │   ├── products.router.js  
-│   │   ├── carts.router.js  
-│   │   └── views.router.js  
-│   ├── views/  
-│   │   ├── products.handlebars  
-│   │   ├── product-detail.handlebars  
-│   │   ├── cart.handlebars  
-│   │   ├── error.handlebars  
-│   │   └── layouts/  
-│   │       └── main.handlebars  
-│   ├── app.js  
-│   └── seed.js  
-├── .env  
-├── .gitignore  
-├── package.json  
-└── README.md
+Proyecto de **backend para un ecommerce**, desarrollado con Node.js, Express y MongoDB. Permite CRUD completo de productos y carritos, vistas dinámicas con Handlebars, sesión de usuario y WebSockets para actualizaciones en tiempo real.
 
-## **⚙️ Instalación y ejecución**
+Este proyecto cumple con los requisitos de entrega final del bootcamp de backend.
 
-\# 1\. Clonar el repositorio  
-git clone \[https://github.com/Viralsouls/EntregaFinalMartin.git\](https://github.com/Viralsouls/EntregaFinalMartin.git)  
-cd EntregaFinalMartin
+---
 
-\# 2\. Instalar dependencias  
-npm install
+## 🚀 Tecnologías
 
-\# 3\. Configurar el archivo .env (usar .env.example como guía)
+- **Node.js** + **Express**
+- **MongoDB Atlas** con **Mongoose** y paginación (`mongoose-paginate-v2`)
+- **express-session** para sesión de usuario y carrito persistente
+- **Handlebars** para vistas dinámicas en el frontend
+- **Socket.io** para actualizaciones en tiempo real
+- **dotenv** para manejo de variables de entorno
 
-\# 4\. Poblar la base de datos con datos de ejemplo  
-npm run seed
+---
 
-\# 5\. Iniciar el servidor en modo desarrollo  
-npm run dev
+## 🛠 Características
 
-📡 El servidor escucha en el puerto 8080\.
+- ✅ CRUD completo de **Productos** (`/api/products`)
+  - Paginación, filtrado (`category` o `availability`), ordenamiento (precio asc/desc)
+- ✅ CRUD completo de **Carritos** (`/api/carts`)
+  - Agregar, eliminar, actualizar cantidades, vaciar carrito
+- ✅ Persistencia con MongoDB y uso de _populate_ para incluir datos completos de productos en carritos
+- ✅ Vistas:
+  - 🏠 `/`: listado de productos
+  - 📄 `/products/:pid`: detalle con botón “Agregar al carrito”
+  - 🛒 `/carts/:cid`: carrito con tabla de productos y totales
+- ✅ Websocket para notificaciones en tiempo real (opcional)
 
-## **🧪 Endpoints HTTP**
+---
 
-### **🔹 Productos: /api/products**
+## ⚙️ Instalación y ejecución
 
-| Método | Ruta | Descripción |
-| :---- | :---- | :---- |
-| GET | / | Obtener una lista paginada de productos. Acepta limit, page, sort, query. |
-| GET | /:pid | Obtener un producto específico por su ID. |
-| POST | / | Crear un nuevo producto. |
-| PUT | /:pid | Actualizar un producto por su ID. |
-| DELETE | /:pid | Eliminar un producto por su ID. |
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/Viralsouls/EntregaFinalMartin.git
+   cd EntregaFinalMartin
+   ```
+2. Instala dependencias:
+   ```bash
+   npm install
+   ```
+3. Crea archivo `.env` en la raíz con:
+   ```
+   PORT=8080
+   MONGO_URL=<tu-string-de-conexión-de-mongodb-atlas>
+   SESSION_SECRET=<clave-secreta>
+   ```
+4. Inicia la aplicación:
+   ```bash
+   npm run dev
+   ```
+5. Abre el navegador en `http://localhost:8080`
 
-### **🔹 Carritos: /api/carts**
+---
 
-| Método | Ruta | Descripción |
-| :---- | :---- | :---- |
-| POST | /:cid/products/:pid | Agregar un producto al carrito (o incrementar su cantidad). |
-| POST | /:cid/purchase | Finalizar el proceso de compra para un carrito. |
-| GET | /:cid | Obtener los productos de un carrito por su ID. |
-| PUT | /:cid/products/:pid | Actualizar la cantidad de un producto en el carrito. |
-| DELETE | /:cid/products/:pid | Eliminar un producto específico del carrito. |
-| DELETE | /:cid | Eliminar todos los productos del carrito. |
+## 🔧 Endpoints REST
 
-## **🖥️ Vistas con Handlebars**
+### Productos
+- `GET /api/products?limit=&page=&sort=&query=`
+- `GET /api/products/:pid`
+- `POST /api/products`
+- `PUT /api/products/:pid`
+- `DELETE /api/products/:pid`
 
-### **📍 [http://localhost:8080/products](https://www.google.com/search?q=http://localhost:8080/products)**
+### Carritos
+- `POST /api/carts` → Crear nuevo carrito
+- `GET /api/carts/:cid`
+- `POST /api/carts/:cid/product/:pid`
+- `PUT /api/carts/:cid`
+- `PUT /api/carts/:cid/product/:pid` (actualiza cantidad)
+- `DELETE /api/carts/:cid/product/:pid`
+- `DELETE /api/carts/:cid` → Vaciar carrito
 
-* Muestra la lista de productos paginada. Permite agregar productos al carrito.
+---
 
-### **📍 http://localhost:8080/products/:pid**
+## 🧪 Vistas disponibles
 
-* Muestra la vista de detalle de un producto específico.
+- **/** – Listado de productos
+- **/products/:pid** – Detalle del producto, con botón para agregar al carrito
+- **/carts/:cid** – Ver el carrito completo con productos, cantidades y subtotal
 
-### **📍 [http://localhost:8080/carts/:cid](https://www.google.com/search?q=http://localhost:8080/carts/:cid)**
+---
 
-* Muestra el contenido de un carrito de compras y permite finalizar la compra.
+## 📝 Sugerencias de mejora
 
-## **📄 Notas técnicas**
+- Usar AJAX o fetch para interacciones más fluidas
+- Agregar sistemas de autenticación/usuarios (registro/login)
+- Implementar un diseño atractivo con Bootstrap o Tailwind
 
-* IDs de MongoDB generados automáticamente.  
-* Persistencia de datos robusta con MongoDB.  
-* Estructura modular y organizada para facilitar el mantenimiento.  
-* Experiencia de usuario mejorada con notificaciones "toast" y navegación clara.
+---
 
-## **🧑‍💻 Autor**
+## 🧑‍💻 Autor
 
-Juan Martin  
-GitHub: @Viralsouls
+**Juan Martín** (Viralsouls)  
+Proyecto para la entrega final de Backend Coderhouse (Curso 77515)
+
+---
+
+### 🧾 Licencia
+
+Licencia MIT
