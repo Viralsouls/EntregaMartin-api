@@ -1,0 +1,71 @@
+[
+  {
+    "title": "Camiseta Deportiva",
+    "description": "Camiseta para correr, ligera y transpirable",
+    "code": "CD001",
+    "price": 25.99,
+    "status": true,
+    "stock": 50,
+    "category": "Ropa",
+    "thumbnails": [
+      "img/camiseta1.jpg",
+      "img/camiseta2.jpg"
+    ],
+    "id": 1
+  },
+  {
+    "title": "Guantes",
+    "description": "Guantes para invierno",
+    "code": "GI032",
+    "price": 19.99,
+    "status": true,
+    "stock": 100,
+    "category": "Ropa",
+    "thumbnails": [
+      "img/guantes1.jpg",
+      "img/guantes2.jpg"
+    ],
+    "id": 2
+  },
+  {
+    "title": "Falda",
+    "description": "Falda tipo coctel",
+    "code": "FC303",
+    "price": 19.99,
+    "status": true,
+    "stock": 100,
+    "category": "Ropa",
+    "thumbnails": [
+      "img/falda1.jpg",
+      "img/falda2.jpg"
+    ],
+    "id": 3
+  },
+  {
+    "title": "Camisa formal",
+    "description": "Camisa formal",
+    "code": "CF001",
+    "price": 37,
+    "stock": 15,
+    "category": "Camisa",
+    "thumbnails": [
+      "img/camisetaf1.jpg",
+      "imgh/camisetaf2.jpg"
+    ],
+    "status": true,
+    "id": 4
+  },
+  {
+    "title": "Pullover",
+    "description": "Pullover de lana suave",
+    "code": "PO0001",
+    "price": 45,
+    "stock": 30,
+    "category": "Pullover",
+    "thumbnails": [
+      "img/pullover1.jpg"
+    ],
+    "status": true,
+    "id": 5
+  }
+]

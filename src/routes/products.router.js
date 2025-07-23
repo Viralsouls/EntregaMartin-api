@@ -3,7 +3,7 @@ import { ProductModel } from '../models/product.model.js';
 
 const router = Router();
 
-// GET / con paginación, filtros y ordenamiento (CORRECTO)
+// GET / con paginación, filtros y ordenamiento
 router.get('/', async (req, res) => {
     try {
         const { limit = 10, page = 1, sort, query } = req.query;
@@ -20,7 +20,6 @@ router.get('/', async (req, res) => {
 
         const searchQuery = {};
         if (query) {
-            // Puedes hacer el query más flexible, por ejemplo, por categoría o disponibilidad
             searchQuery.category = query;
         }
 
@@ -70,11 +69,9 @@ router.get('/:pid', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const productData = req.body;
-        // La validación ahora la hace Mongoose según tu `product.model.js`
         const newProduct = await ProductModel.create(productData);
         res.status(201).json({ status: 'success', payload: newProduct });
     } catch (error) {
-        // Si hay un error de validación de Mongoose, lo informamos
         res.status(400).json({ status: 'error', message: error.message });
     }
 });

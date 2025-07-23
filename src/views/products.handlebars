@@ -1,23 +1,68 @@
-<h2>Nuestros Productos 🛍️</h2>
+<div class="container mt-4">
+    <h2 class="mb-4">Nuestros Productos 🛍️</h2>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-bottom: 20px;">
-    {{#each products}}
-        <div class="product-card" style="border: 1px solid #ccc; padding: 15px; border-radius: 8px;">
-            <h4>{{this.title}}</h4>
-            <p><strong>Categoría:</strong> {{this.category}}</p>
-            <p><strong>Precio:</strong> ${{this.price}}</p>
-            <p><strong>Stock:</strong> {{this.stock}}</p>
-            <button>Agregar al Carrito</button>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {{#each products}}
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{this.title}}</h5>
+                    <p class="card-text">{{this.description}}</p>
+                    <p class="card-text"><strong>Categoría:</strong> {{this.category}}</p>
+                    <p class="card-text"><strong>Precio:</strong> ${{this.price}}</p>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary" onclick="addToCart('{{../user.cartId}}', '{{this._id}}')">
+                        Agregar al Carrito
+                    </button>
+                </div>
+            </div>
         </div>
-    {{/each}}
+        {{/each}}
+    </div>
+
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {{#if hasPrevPage}}
+            <li class="page-item"><a class="page-link" href="{{prevLink}}">Anterior</a></li>
+            {{else}}
+            <li class="page-item disabled"><a class="page-link" href="#">Anterior</a></li>
+            {{/if}}
+
+            <li class="page-item active" aria-current="page">
+                <span class="page-link">{{page}}</span>
+            </li>
+
+            {{#if hasNextPage}}
+            <li class="page-item"><a class="page-link" href="{{nextLink}}">Siguiente</a></li>
+            {{else}}
+            <li class="page-item disabled"><a class="page-link" href="#">Siguiente</a></li>
+            {{/if}}
+        </ul>
+    </nav>
 </div>
 
-<div class="pagination" style="text-align: center;">
-    {{#if hasPrevPage}}
-        <a href="{{prevLink}}" style="margin-right: 15px;">⬅️ Anterior</a>
-    {{/if}}
-    <span style="font-weight: bold;">Página {{page}} de {{totalPages}}</span>
-    {{#if hasNextPage}}
-        <a href="{{nextLink}}" style="margin-left: 15px;">Siguiente ➡️</a>
-    {{/if}}
-</div>
+<script>
+    async function addToCart(cartId, productId) {
+        if (!cartId || cartId === 'ID_DE_CARRITO_DE_EJEMPLO') {
+            alert('Error: ID de carrito no configurado.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                method: 'POST', // O PUT, dependiendo de tu lógica para agregar/actualizar
+            });
+
+            if (response.ok) {
+                alert('¡Producto agregado al carrito!');
+            } else {
+                const errorData = await response.json();
+                alert(`Error al agregar producto: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Error de red:', error);
+            alert('Error de conexión al agregar el producto.');
+        }
+    }
+</script>
